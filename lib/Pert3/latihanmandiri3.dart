@@ -1,0 +1,241 @@
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+// MODEL TUGAS
+class Tugas {
+  final String judul;
+  bool selesai;
+
+  Tugas({
+    required this.judul,
+    this.selesai = false,
+  });
+}
+
+// STATE MANAGEMENT PROVIDER
+class TugasModel extends ChangeNotifier {
+  final List<Tugas> _items = [];
+
+  List<Tugas> get items => List.unmodifiable(_items);
+
+  int get jumlahSelesai =>
+      _items.where((tugas) => tugas.selesai).length;
+
+  void tambah(String judul) {
+    _items.add(Tugas(judul: judul));
+    notifyListeners();
+  }
+
+  void toggle(int index) {
+    _items[index].selesai = !_items[index].selesai;
+    notifyListeners();
+  }
+
+  void hapus(int index) {
+    _items.removeAt(index);
+    notifyListeners();
+  }
+
+  void hapusSelesai() {
+    _items.removeWhere((tugas) => tugas.selesai);
+    notifyListeners();
+  }
+}
+
+// MAIN
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => TugasModel(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+// APLIKASI UTAMA
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Daftar Tugas',
+      theme: ThemeData(
+        colorSchemeSeed: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const TugasPage(),
+    );
+  }
+}
+
+// HALAMAN DAFTAR TUGAS
+class TugasPage extends StatelessWidget {
+  const TugasPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final model = context.watch<TugasModel>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Tugas (${model.jumlahSelesai}/${model.items.length})',
+        ),
+        actions: [
+          IconButton(
+            tooltip: 'Hapus tugas selesai',
+            icon: const Icon(Icons.delete_sweep),
+            onPressed: () {
+              if (model.jumlahSelesai == 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Belum ada tugas yang selesai'),
+                  ),
+                );
+                return;
+              }
+
+              context.read<TugasModel>().hapusSelesai();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Tugas selesai berhasil dihapus'),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: model.items.isEmpty
+          ? const Center(
+        child: Text(
+          'Belum ada tugas',
+          style: TextStyle(fontSize: 18),
+        ),
+      )
+          : ListView.builder(
+        itemCount: model.items.length,
+        itemBuilder: (context, index) {
+          final tugas = model.items[index];
+
+          return ListTile(
+            leading: Checkbox(
+              value: tugas.selesai,
+              onChanged: (_) {
+                context.read<TugasModel>().toggle(index);
+              },
+            ),
+            title: Text(
+              tugas.judul,
+              style: TextStyle(
+                decoration: tugas.selesai
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
+            ),
+            trailing: IconButton(
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                context.read<TugasModel>().hapus(index);
+              },
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const TambahTugasPage(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+// HALAMAN TAMBAH TUGAS
+class TambahTugasPage extends StatefulWidget {
+  const TambahTugasPage({super.key});
+
+  @override
+  State<TambahTugasPage> createState() =>
+      _TambahTugasPageState();
+}
+
+class _TambahTugasPageState extends State<TambahTugasPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void simpanTugas() {
+    if (_formKey.currentState!.validate()) {
+      context.read<TugasModel>().tambah(
+        _controller.text.trim(),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tugas ditambahkan'),
+        ),
+      );
+
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tambah Tugas'),
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            TextFormField(
+              controller: _controller,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Judul tugas',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Judul tugas wajib diisi';
+                }
+
+                if (value.trim().length < 3) {
+                  return 'Judul minimal 3 karakter';
+                }
+
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: simpanTugas,
+              child: const Text('Simpan'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
