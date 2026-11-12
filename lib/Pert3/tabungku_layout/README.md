@@ -1,21 +1,21 @@
-# TabungKu – Tugas Minggu 3 Pemrograman Mobile
+# TabungKu – Tugas Pertemuan 3 Pemrograman Mobile
 
 ## Deskripsi Proyek
 
-**TabungKu** merupakan aplikasi sederhana berbasis Flutter yang dikembangkan untuk memenuhi **Tugas Minggu 3 Mata Kuliah T1505 Pemrograman Mobile**. Tugas ini berfokus pada penyusunan tata letak (*layout*) halaman Ringkasan Tabungan menggunakan widget dasar Flutter.
+**TabungKu** merupakan aplikasi sederhana berbasis Flutter yang dikembangkan untuk memenuhi **Tugas Pertemuan 3 Mata Kuliah Pemrograman Mobile**. Tugas ini berfokus pada penyusunan tata letak (*layout*) halaman Ringkasan Tabungan menggunakan widget dasar Flutter.
 
 Aplikasi menampilkan informasi saldo dan target tabungan, menu kategori, serta riwayat transaksi menggunakan data statis. Tampilan menggunakan tema *Soft Pink* dengan desain sederhana, rapi, dan responsif untuk perangkat ponsel maupun tablet.
 
 ## Identitas Mahasiswa
 
-| Keterangan | Informasi |
-|---|---|
-| Nama | Salu Rahmawati |
-| NIM | 20240801001 |
-| Universitas | Universitas Esa Unggul |
-| Program Studi | Teknik Informatika |
-| Mata Kuliah | T1505 Pemrograman Mobile |
-| Semester | 5 |
+| Keterangan | Informasi                                              |
+|---|--------------------------------------------------------|
+| Nama | Salu Rahmawati                                         |
+| NIM | 20240801001                                            |
+| Universitas | Universitas Esa Unggul                                 |
+| Program Studi | Teknik Informatika                                     |
+| Mata Kuliah | Pemrograman Mobile CR002                               |
+| Semester | 5                                                      |
 | Tugas | Minggu 3 – Menyusun Layout dengan Widget Dasar Flutter |
 
 ## Fitur Tampilan
@@ -93,8 +93,8 @@ tabungku_layout/
 ├── lib/
 │   └── main.dart
 ├── docs/
-│   ├── screenshot_hp.png
-│   └── screenshot_tablet.png
+│   ├── Tampilan_Mobile.png
+│   └── Tampilan_tablet.png
 ├── pubspec.yaml
 └── README.md
 ```
@@ -105,6 +105,4 @@ Melalui tugas ini, halaman Ringkasan Tabungan pada aplikasi TabungKu berhasil di
 
 ---
 
-**Tugas Individu – Pemrograman Mobile**
 
-Universitas Esa Unggul | Semester 5
